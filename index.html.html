@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Sajiva Coffee - Artisan Roastery Review</title>
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#f8f9fa">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="apple-touch-icon" href="icon-192.png">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
+  <style>
+    :root {
+      --bg-dark: #f8f9fa;
+      --card-bg: rgba(255, 255, 255, 0.85);
+      --card-border: rgba(0, 0, 0, 0.08); 
+      --accent-gold: #b87d4b;
+      --accent-gold-light: #8c5828;
+      
+      /* Copper Colors */
+      --copper-amber: #b87d4b;
+      --copper-glow: rgba(184, 125, 75, 0.25);
+      
+      /* Sand Colors */
+      --sand-main: #d4a373;
+      --sand-dark: #bc8a5f;
+      
+      --text-main: #1a1a1a;
+      --text-secondary: #555555; 
+      --text-dim: #888888;
+      --error-red: #dc2626;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    
+    body { 
+      background-color: var(--bg-dark); 
+      color: var(--text-main); 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      min-height: 100vh; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      padding: 24px 18px; 
+      position: relative; 
+      overflow-x: hidden; 
+    }
+
+    body::before { 
+      content: ""; 
+      position: absolute; 
+      top: 5%; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      width: 380px; 
+      height: 380px; 
+      background: radial-gradient(circle, rgba(184, 125, 75, 0.15) 0%, transparent 70%); 
+      pointer-events: none; 
+      z-index: 0; 
+    }
+
+    .wrapper { width: 100%; max-width: 410px; position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; }
+    
+    .brand-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 26px; text-align: center; }
+
+    .brand-name { font-family: 'Cinzel', serif; font-size: 2.3rem; font-weight: 600; letter-spacing: 7px; color: var(--text-main); text-transform: uppercase; line-height: 1; margin-bottom: 8px; }
+    .brand-meta { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; font-family: 'Cinzel', serif; font-size: 0.68rem; letter-spacing: 3.5px; color: var(--accent-gold); text-transform: uppercase; margin-bottom: 6px; }
+    .brand-meta span.divider { width: 24px; height: 1px; background: #d1d5db; }
+    .brand-subtext { font-size: 0.72rem; letter-spacing: 4px; color: var(--text-secondary); text-transform: uppercase; font-weight: 500; }
+    
+    .card { 
+      width: 100%; 
+      background: var(--card-bg); 
+      border: 1px solid var(--card-border); 
+      border-radius: 24px; 
+      padding: 34px 24px 28px; 
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06), inset 0 0 0 1px rgba(255, 255, 255, 0.6); 
+      text-align: center; 
+      position: relative; 
+      overflow: hidden; 
+      backdrop-filter: blur(16px); 
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    .card::before { content: ""; position: absolute; top: 0; left: 15%; right: 15%; height: 1px; background: linear-gradient(90deg, transparent, var(--accent-gold), transparent); }
+    .card-headline { font-size: 1.15rem; font-weight: 600; color: var(--text-main); line-height: 1.4; margin-bottom: 6px; }
+    .card-subtitle { font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 22px; line-height: 1.4; }
+    
+    .form-group { margin-bottom: 16px; text-align: left; width: 100%; position: relative; }
+    .form-label { display: block; font-size: 0.82rem; color: var(--accent-gold-light); margin-bottom: 8px; font-weight: 600; padding-left: 4px; }
+    .form-input { width: 100%; padding: 14px 16px; background: #ffffff; border: 1px solid rgba(0, 0, 0, 0.15); border-radius: 12px; color: var(--text-main); font-family: inherit; font-size: 0.95rem; outline: none; transition: all 0.2s ease; }
+    .form-input:focus { border-color: var(--accent-gold); box-shadow: 0 0 0 3px rgba(184, 125, 75, 0.15); }
+    .form-input.error { border-color: var(--error-red); box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1); }
+    .form-input::placeholder { color: var(--text-dim); }
+    .error-text { color: var(--error-red); font-size: 0.75rem; margin-top: 6px; padding-left: 4px; display: none; }
+    
+    .btn-submit { width: 100%; padding: 16px; background: #1a1a1a; color: #ffffff; border: none; border-radius: 14px; font-weight: 700; font-size: 0.96rem; letter-spacing: 0.5px; cursor: pointer; margin-top: 12px; transition: transform 0.15s ease, background 0.2s ease; }
+    .btn-submit:hover { background: #000000; }
+    .btn-submit:active { transform: scale(0.98); }
+    .btn-submit:disabled { background: #e5e7eb; color: #9ca3af; cursor: not-allowed; }
+    
+    #step-2, #step-3 { display: none; animation: fadeIn 0.4s ease forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Star Rating Box dengan warna Copper */
+    .star-rating-box { display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 18px; background: rgba(184, 125, 75, 0.1); border: 1px solid rgba(184, 125, 75, 0.3); border-radius: 40px; margin-bottom: 12px; box-shadow: 0 0 24px var(--copper-glow); }
+    .star-icon { width: 36px; height: 36px; fill: transparent; stroke: var(--copper-amber); stroke-width: 1.5; cursor: pointer; transition: all 0.2s ease-in-out; }
+    
+    /* Bintang Aktif Warna Copper */
+    .star-icon.active { fill: var(--copper-amber); stroke: #8c5828; stroke-width: 0.5; filter: drop-shadow(0 2px 6px rgba(184, 125, 75, 0.5)); }
+    .star-icon:hover { transform: scale(1.15); }
+    .rating-note { font-size: 0.78rem; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--accent-gold-light); margin-bottom: 20px; min-height: 16px; }
+    
+    #action-container { display: none; flex-direction: column; align-items: center; width: 100%; }
+    .btn-action { display: flex; align-items: center; justify-content: center; gap: 12px; width: 100%; padding: 16px 20px; color: #ffffff; font-size: 0.96rem; font-weight: 700; letter-spacing: 0.3px; text-decoration: none; border-radius: 14px; border: none; cursor: pointer; transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.3s ease; }
+    
+    /* Tombol Google Review Warna Copper */
+    .btn-google { background: linear-gradient(135deg, #b87d4b 0%, #8c5828 100%); color: #ffffff; box-shadow: 0 8px 24px rgba(184, 125, 75, 0.3); }
+    .btn-google:active { transform: scale(0.98); box-shadow: 0 4px 12px rgba(184, 125, 75, 0.2); }
+    
+    .btn-wa { background: linear-gradient(135deg, #25D366 0%, #128C7E 100%); color: #ffffff; box-shadow: 0 8px 24px rgba(37, 211, 102, 0.25); }
+    .btn-wa:active { transform: scale(0.98); box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2); }
+    
+    /* Tombol Klaim Voucher - Default/Disabled (Warna Sand saat Waktu Menunggu) */
+    .btn-claim { 
+      background: linear-gradient(135deg, var(--sand-main) 0%, var(--sand-dark) 100%); 
+      color: #ffffff; 
+      margin-top: 12px; 
+      box-shadow: 0 8px 24px rgba(212, 163, 115, 0.35); 
+    }
+    .btn-claim:disabled { 
+      opacity: 0.85;
+      cursor: not-allowed; 
+    }
+
+    /* Tombol Klaim Voucher - Siap Klik (Berubah Jadi Dark Chocolate saat Waktu Menunggu Selesai) */
+    .btn-claim:not(:disabled) {
+      background: linear-gradient(135deg, #2D1C13 0%, #1a0f0a 100%);
+      color: #ffffff;
+      box-shadow: 0 8px 24px rgba(45, 28, 19, 0.4);
+      cursor: pointer;
+    }
+    .btn-claim:not(:disabled):active {
+      transform: scale(0.98);
+    }
+    
+    .btn-download { background: #1a1a1a; color: #ffffff; margin-top: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); }
+    .btn-download:active { transform: scale(0.98); }
+    .action-icon { width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; }
+    
+    .note-instruction-box { margin-top: 18px; padding: 14px 16px; border-radius: 14px; background: rgba(184, 125, 75, 0.1); border: 1px solid rgba(184, 125, 75, 0.3); text-align: left; width: 100%; }
+    .note-instruction-title { font-size: 0.85rem; font-weight: 700; color: var(--accent-gold-light); margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .note-instruction-list { font-size: 0.8rem; color: var(--text-main); line-height: 1.5; padding-left: 18px; margin: 0; }
+    .note-instruction-list li { margin-bottom: 4px; }
+
+    .hint-box { margin-top: 18px; padding: 12px 14px; border-radius: 12px; background: rgba(0, 0, 0, 0.03); border: 1px dashed rgba(0, 0, 0, 0.15); display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.78rem; color: var(--accent-gold-light); line-height: 1.35; width: 100%; }
+    
+    .footer-greeting { margin-top: 26px; text-align: center; font-size: 0.88rem; color: var(--text-secondary); font-style: italic; line-height: 1.5; max-width: 320px; }
+
+    .voucher-card { background: #ffffff; border: 2px dashed var(--accent-gold); border-radius: 16px; padding: 24px 20px; margin-top: 16px; position: relative; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); }
+    .voucher-card::before, .voucher-card::after { content: ''; position: absolute; top: 50%; width: 20px; height: 20px; background: var(--bg-dark); border-radius: 50%; transform: translateY(-50%); border: 2px solid var(--accent-gold); }
+    .voucher-card::before { left: -12px; border-left-color: transparent; border-top-color: transparent; border-bottom-color: transparent; }
+    .voucher-card::after { right: -12px; border-right-color: transparent; border-top-color: transparent; border-bottom-color: transparent; }
+    
+    .voucher-header, .voucher-title { font-family: 'Cinzel', serif; }
+    .voucher-header { font-size: 1.6rem; font-weight: 500; color: var(--accent-gold); margin-bottom: 4px; }
+    .voucher-title { font-size: 1.6rem; font-weight: 600; margin-bottom: 12px; letter-spacing: 1px; color: #1a1a1a; }
+    
+    .qr-container { display: flex; justify-content: center; margin-bottom: 18px; }
+    .qr-box { background: #ffffff; padding: 10px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08); border: 1px solid #eeeeee; }
+    
+    .voucher-code-box { background: rgba(0, 0, 0, 0.04); padding: 14px; border-radius: 10px; margin-bottom: 20px; border: 1px solid rgba(0, 0, 0, 0.08); }
+    .voucher-code-label { display: block; font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px; }
+    .voucher-code { font-family: monospace; font-size: 1.25rem; font-weight: 700; color: var(--accent-gold-light); letter-spacing: 3px; }
+
+    .watermark {
+      position: fixed;
+      bottom: 12px;
+      right: 16px;
+      font-size: 11px;
+      font-weight: 400;
+      color: #8c5828;
+      letter-spacing: 0.5px;
+      z-index: 9999;
+      pointer-events: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="wrapper">
+    <header class="brand-container">
+      <h1 class="brand-name">SAJIVA</h1>
+      <div class="brand-meta"><span>ESTD</span><span class="divider"></span><span>2016</span></div>
+      <p class="brand-subtext">ARTISAN ROASTERY</p>
+    </header>
+
+    <main class="card">
+      <div id="step-1">
+        <h2 class="card-headline">Selamat Datang!</h2>
+        <p class="card-subtitle">
+          <span>Isi Data Untuk Lanjut Review </span><br>
+          <span>Dapatkan Promo &amp; Voucher Menarik</span>
+        </p>
+        <form id="customer-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="nama">Nama Kamu</label>
+            <input type="text" id="nama" name="nama" class="form-input" autocomplete="off">
+            <div class="error-text" id="error-nama">Masukkan nama valid (3-25 huruf, tanpa angka/simbol).</div>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="nohp">Nomor WhatsApp</label>
+            <input type="tel" id="nohp" name="nohp" class="form-input" maxlength="13" autocomplete="off">
+            <div class="error-text" id="error-nohp">Nomor WhatsApp tidak valid atau palsu. Masukkan nomor seluler Indonesia yang benar.</div>
+            <p style="font-size: 11px; font-weight: 400; font-style: italic; color: #666; margin-top: 5px;">
+              *Nomor Kamu Adalah Kode Unik Voucher
+            </p>          
+          </div>
+          <button type="submit" id="btn-submit-step1" class="btn-submit">Lanjutkan Review</button>
+        </form>
+      </div>
+
+      <div id="step-2">
+        <h2 class="card-headline">Bagikan Pengalaman Anda</h2>
+        <p class="card-subtitle">Ketuk bintang di bawah untuk menilai layanan kami.</p>
+        <div class="star-rating-box" id="stars-container">
+          <svg class="star-icon" data-rating="1" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg class="star-icon" data-rating="2" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg class="star-icon" data-rating="3" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg class="star-icon" data-rating="4" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          <svg class="star-icon" data-rating="5" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+        </div>
+        <div class="rating-note" id="rating-text">Pilih Bintang</div>
+        
+        <div id="action-container">
+          <button id="action-btn" class="btn-action">
+            <span class="action-icon" id="action-icon-svg"></span>
+            <span id="action-text">Lanjutkan</span>
+          </button>
+
+          <button id="btn-claim-voucher" class="btn-action btn-claim" style="display: none;" disabled>
+            <span>Mohon Tunggu (5s)...</span>
+          </button>
+
+          <div class="note-instruction-box" id="note-instruction" style="display: none;">
+            <div class="note-instruction-title">📌 Note:</div>
+            <ol class="note-instruction-list">
+              <li>Buka ulasan Google via tombol di atas.</li>
+              <li>Beri rating bintang 5 dan ulasan terbaik Anda.</li>
+              <li>Kembali ke sini dan Klaim Voucher Anda.</li>
+            </ol>
+          </div>
+
+          <div class="hint-box" id="action-hint">
+            <span>✨</span>
+            <span id="hint-text">Terima kasih atas penilaian Anda.</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="step-3">
+        <h2 class="card-headline">Terima Kasih!</h2>
+        <p class="card-subtitle">Voucher Berhasil Dibuat <br> Unduh Atau Screenshot Voucher Ini </p>
+
+        <div class="voucher-card" id="voucher-to-download">
+          <div class="voucher-header">SAJIVA</div>
+          <div class="voucher-title">EXCLUSIVE VOUCHER</div>
+
+          <div style="display: flex; justify-content: center; align-items: flex-end; gap: 8px; margin-bottom: 8px; font-family: 'Cinzel', serif; color: var(--accent-gold);">
+            <div style="display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1;">
+              <span style="font-size: 0.75rem; font-style: italic; font-weight: 400; font-family: sans-serif; color: var(--text-secondary);">Up To</span>
+              <span style="font-size: 1.8rem; font-weight: 500;">Rp.</span>
+            </div>
+            <span style="font-size: 2.5rem; font-weight: 500; line-height: 0.9;">100.000</span>
+          </div>
+
+          <div style="font-size: 0.9rem; color: var(--text-main); margin-bottom: 4px;">Enjoy 15% Discount</div>
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 20px;">Minimum Spending Rp 150.000 <br> Before Tax &amp; Service</div>
+                  
+          <div class="qr-container">
+            <div class="qr-box" id="qrcode-box"></div>
+          </div>
+          
+          <div class="voucher-code-box">
+            <span class="voucher-code-label">KODE VOUCHER ANDA:</span>
+            <div class="voucher-code" id="display-voucher-code"></div>
+          </div>
+          
+          <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 20px;">Tunjukkan Voucher Ini <br> &amp; Bukti Google Review Bintang 5 Ke Kasir</div>
+          <div style="font-size: 0.85rem; font-weight: bold; color: var(--error-red);" id="claim-before">Claim Before: </div>
+        </div>
+
+        <button id="btn-download-voucher" class="btn-action btn-download">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Unduh Voucher
+        </button>
+      </div>
+    </main>
+    <footer class="footer-greeting">"Terima Kasih Atas Kunjungan &amp; Review-nya!"</footer>
+  </div>
+
+  <div class="watermark">
+    © Hikami Dev
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById('customer-form');
+      const inputNama = document.getElementById('nama');
+      const inputNoHp = document.getElementById('nohp');
+      const errorNama = document.getElementById('error-nama');
+      const errorNoHp = document.getElementById('error-nohp');
+      const btnSubmitStep1 = document.getElementById('btn-submit-step1');
+      
+      const step1 = document.getElementById('step-1');
+      const step2 = document.getElementById('step-2');
+      const step3 = document.getElementById('step-3');
+      const displayVoucherCode = document.getElementById('display-voucher-code');
+      const btnDownload = document.getElementById('btn-download-voucher');
+      const btnClaimVoucher = document.getElementById('btn-claim-voucher');
+
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbxE6mpCpTF05RL-FlAgHL4I0fov_d31OzBegQxWolCVWUqavs3VTKBM2CNdO1MlIPRsKg/exec';
+      const waKasirNumber = '628111289940'; 
+      const googleReviewURL = 'https://search.google.com/local/writereview?placeid=ChIJh6F2zqn-aS4R8aXYydTaxMQ';
+
+      let customerData = { nama: "", nohp: "", rating: 0 };
+
+      inputNama.addEventListener('input', function() {
+        this.value = this.value.replace(/[^A-Za-z\s]/g, '');
+        if (this.value.trim().length >= 3 && this.value.trim().length <= 25) {
+          inputNama.classList.remove('error');
+          errorNama.style.display = 'none';
+        }
+      });
+
+      inputNoHp.addEventListener('input', function() {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (validateIndoPhoneNumber(this.value.trim())) {
+          inputNoHp.classList.remove('error');
+          errorNoHp.style.display = 'none';
+        }
+      });
+
+      function validateIndoPhoneNumber(number) {
+        const indoPrefixRegex = /^(0811|0812|0813|0821|0822|0823|0851|0852|0853|0814|0815|0816|0855|0856|0857|0858|0817|0818|0819|0859|0877|0878|0831|0832|0833|0838|0895|0896|0897|0898|0899|0881|0882|0883|0884|0885|0886|0887|0888|0889)[0-9]{6,9}$/;
+        
+        if (!indoPrefixRegex.test(number)) return false;
+        if (/(\d)\1{4,}/.test(number)) return false;
+
+        const sequencePatterns = [
+          "01234", "12345", "23456", "34567", "45678", "56789", "67890",
+          "98765", "87654", "76543", "65432", "54321", "43210"
+        ];
+
+        for (let pattern of sequencePatterns) {
+          if (number.includes(pattern)) return false;
+        }
+
+        return true;
+      }
+
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        let isValid = true;
+        const namaVal = inputNama.value.trim();
+        const nohpVal = inputNoHp.value.trim();
+
+        if (namaVal.length < 3 || namaVal.length > 25) {
+          inputNama.classList.add('error');
+          errorNama.style.display = 'block';
+          isValid = false;
+        } else {
+          inputNama.classList.remove('error');
+          errorNama.style.display = 'none';
+        }
+
+        if (!validateIndoPhoneNumber(nohpVal)) {
+          inputNoHp.classList.add('error');
+          errorNoHp.textContent = "Nomor WhatsApp tidak valid atau palsu. Masukkan nomor seluler Indonesia yang benar.";
+          errorNoHp.style.display = 'block';
+          isValid = false;
+        } else {
+          inputNoHp.classList.remove('error');
+          errorNoHp.style.display = 'none';
+        }
+
+        if (isValid) {
+          btnSubmitStep1.disabled = true;
+          btnSubmitStep1.textContent = "Memeriksa Nomor...";
+
+          customerData.nama = namaVal;
+          customerData.nohp = nohpVal;
+
+          sendDataToBackend('belum klik beri review', "", (result) => {
+            if (result && result.status === 'blocked') {
+              inputNoHp.classList.add('error');
+              errorNoHp.textContent = result.message || "Nomor WhatsApp sudah digunakan";
+              errorNoHp.style.display = 'block';
+              btnSubmitStep1.disabled = false;
+              btnSubmitStep1.textContent = "Lanjutkan Review";
+            } else {
+              step1.style.display = 'none';
+              step2.style.display = 'block';
+            }
+          });
+        }
+      });
+
+      function sendDataToBackend(keterangan, kodeVoucher = "", callback = null) {
+        const payload = {
+          nama: customerData.nama,
+          nohp: customerData.nohp,
+          rating: customerData.rating,
+          action: keterangan,
+          voucher: kodeVoucher
+        };
+
+        fetch(scriptURL, { 
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log('Response dari Google Sheet:', data);
+          if (callback) callback(data);
+        })
+        .catch(error => {
+          console.error('Error Pengiriman Data:', error.message);
+          if (callback) callback({ status: 'error', message: error.message });
+        });
+      }
+
+      const stars = document.querySelectorAll('.star-icon');
+      const actionContainer = document.getElementById('action-container');
+      const actionBtn = document.getElementById('action-btn');
+      const ratingText = document.getElementById('rating-text');
+      const actionIconSvg = document.getElementById('action-icon-svg');
+      const actionText = document.getElementById('action-text');
+      const hintText = document.getElementById('hint-text');
+      const noteInstruction = document.getElementById('note-instruction');
+
+      const googleSVG = `<svg width="22" height="22" viewBox="0 0 24 24"><path fill="#ffffff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#ffffff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#ffffff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/><path fill="#ffffff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/></svg>`;
+      const waSVG = `<svg width="22" height="22" viewBox="0 0 24 24" fill="#ffffff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>`;
+
+      stars.forEach(star => {
+        star.addEventListener('click', () => {
+          const rating = parseInt(star.getAttribute('data-rating'));
+          customerData.rating = rating; 
+          
+          stars.forEach((s, index) => {
+            if (index < rating) s.classList.add('active');
+            else s.classList.remove('active');
+          });
+
+          actionContainer.style.display = 'flex';
+          btnClaimVoucher.style.display = 'none';
+
+          if (rating <= 3) {
+            noteInstruction.style.display = 'none';
+            ratingText.textContent = `★ ${rating}.0 - Beritahu Kami Apa yang Kurang`;
+            actionBtn.className = "btn-action btn-wa";
+            actionIconSvg.innerHTML = waSVG;
+            actionText.textContent = "Kirim Masukan via WhatsApp";
+            hintText.textContent = "Bantu kami untuk meningkatkan pelayanan lewat masukan Anda.";
+
+            sendDataToBackend('belum klik whatsapp');
+
+          } else {
+            ratingText.textContent = `★ ${rating}.0 - Terima Kasih!`;
+            actionBtn.className = "btn-action btn-google";
+            actionIconSvg.innerHTML = googleSVG;
+            actionText.textContent = "Beri Review di Google";
+
+            if (rating === 5) {
+              noteInstruction.style.display = 'block';
+              hintText.textContent = "Klik tombol di atas untuk membuka ulasan Google.";
+            } else {
+              noteInstruction.style.display = 'none';
+              hintText.textContent = "Saat form ulasan terbuka, ketuk bintang di Google Maps.";
+            }
+
+            sendDataToBackend('belum klik google review');
+          }
+        });
+      });
+
+      actionBtn.addEventListener('click', () => {
+        if (customerData.rating >= 4) {
+          const width = 500;
+          const height = 650;
+          const left = (window.innerWidth - width) / 2;
+          const top = (window.innerHeight - height) / 2;
+          window.open(googleReviewURL, 'GoogleReviewPopup', `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes`);
+          
+          sendDataToBackend('sudah klik google review');
+
+          if (customerData.rating === 5) {
+            btnClaimVoucher.style.display = 'flex';
+            btnClaimVoucher.disabled = true;
+            let countdown = 5;
+            btnClaimVoucher.innerHTML = `<span>Mohon Tunggu (${countdown}s)...</span>`;
+
+            const timerInterval = setInterval(() => {
+              countdown--;
+              if (countdown > 0) {
+                btnClaimVoucher.innerHTML = `<span>Mohon Tunggu (${countdown}s)...</span>`;
+              } else {
+                clearInterval(timerInterval);
+                btnClaimVoucher.disabled = false;
+                btnClaimVoucher.innerHTML = `<span>Klaim Voucher Anda</span>`;
+              }
+            }, 1000);
+          }
+        } else {
+          const textWa = encodeURIComponent(`Halo Sajiva Coffee, saya ${customerData.nama}. Saya ingin memberikan masukan terkait layanan...`);
+          window.open(`https://api.whatsapp.com/send/?phone=${waKasirNumber}&text=${textWa}`, '_blank');
+          
+          sendDataToBackend('sudah whatsapp');
+        }
+      });
+
+      btnClaimVoucher.addEventListener('click', async () => {
+        // Tombol kembali disabled & otomatis berubah warna ke Sand saat memproses
+        btnClaimVoucher.disabled = true;
+        btnClaimVoucher.innerHTML = `<span>Memproses Kode Voucher...</span>`;
+
+        let finalVoucherCode = "";
+        try {
+          const response = await fetch(scriptURL + "?action=getOdooCode");
+          const resJson = await response.json();
+          if (resJson.status === "success" && resJson.code) {
+            finalVoucherCode = resJson.code;
+          } else {
+            alert("Mohon maaf, stok kode voucher Odoo saat ini tidak tersedia.");
+            btnClaimVoucher.disabled = false;
+            btnClaimVoucher.innerHTML = `<span>Klaim Voucher Anda</span>`;
+            return;
+          }
+        } catch (err) {
+          console.error("Gagal mengambil kode Odoo:", err);
+          alert("Gagal mengambil voucher. Pastikan koneksi internet stabil.");
+          btnClaimVoucher.disabled = false;
+          btnClaimVoucher.innerHTML = `<span>Klaim Voucher Anda</span>`;
+          return;
+        }
+
+        const today = new Date();
+        today.setDate(today.getDate() + 30);
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        const expDateStr = today.toLocaleDateString('id-ID', options);
+
+        step2.style.display = 'none';
+        step3.style.display = 'block';
+        
+        document.getElementById('claim-before').textContent = "Claim before: " + expDateStr;
+        displayVoucherCode.textContent = finalVoucherCode;
+
+        const qrContainer = document.getElementById("qrcode-box");
+        qrContainer.innerHTML = ""; 
+        
+        new QRCode(qrContainer, {
+          text: finalVoucherCode,
+          width: 150,
+          height: 150,
+          colorDark : "#1a1a1a",
+          colorLight : "#ffffff",
+          correctLevel : QRCode.CorrectLevel.H
+        });
+
+        sendDataToBackend('sudah cetak voucher', finalVoucherCode);
+      });
+
+      btnDownload.addEventListener('click', () => {
+        const voucherElement = document.getElementById('voucher-to-download');
+        btnDownload.innerText = "Memproses Gambar...";
+
+        html2canvas(voucherElement, {
+          backgroundColor: '#ffffff',
+          scale: 2
+        }).then(canvas => {
+          const image = canvas.toDataURL("image/png");
+          const link = document.createElement('a');
+          link.href = image;
+          link.download = `Voucher-Sajiva-${customerData.nama}.png`;
+          link.click();
+          btnDownload.innerText = "Unduh Voucher";
+        }).catch(err => {
+          console.error("Gagal mengunduh voucher:", err);
+          btnDownload.innerText = "Unduh Voucher";
+        });
+      });
+    });
+
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker Aktif!', reg))
+          .catch(err => console.error('PWA Registration Gagal:', err));
+      });
+    }
+  </script>
+</body>
+</html>
