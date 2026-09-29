@@ -4,12 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Sajiva Coffee - Artisan Roastery Review</title>
+
+  <!-- META TAG CACHE CONTROL (Mencegah browser menyimpan cache HTML) -->
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
   
-  <link rel="manifest" href="manifest.json">
+  <!-- MANIFEST & ICON DENGAN VERSIONING -->
+  <link rel="manifest" href="manifest.json?v=1.0.0">
   <meta name="theme-color" content="#f8f9fa">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png?v=1.0.0">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -606,9 +612,10 @@
       });
     });
 
+    /* SERVICE WORKER DENGAN VERSIONING QUERY STRING */
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
+        navigator.serviceWorker.register('./sw.js?v=1.0.0')
           .then(reg => console.log('PWA Service Worker Aktif!', reg))
           .catch(err => console.error('PWA Registration Gagal:', err));
       });
