@@ -1689,7 +1689,7 @@ function setupStarRating() {
         customerData = JSON.parse(savedUser);
         document.getElementById('main-brand-header').style.display = 'none';
         document.getElementById('top-app-bar').style.display = 'flex';
-        document.getElementById('welcome-user-text').innerText = `Halo, ${customerData.nama || 'Pelanggan Setia'}!`;
+        document.getElementById('welcome-user-text').innerText = `Hello, ${customerData.nama || 'Pelanggan Setia'}!`;
         
         // Sinkronisasi status voucher dari server
         sendDataToBackend('check_status', null, (res) => {x
